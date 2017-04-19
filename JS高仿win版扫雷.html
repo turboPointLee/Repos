@@ -1,0 +1,387 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+     <meta name="format-detection" content="telephone=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+  <TITLE> 扫雷游戏 </TITLE>
+
+ </HEAD>
+
+ <BODY>
+ <div align="center">
+ 中越边境：<br/>
+ <hr/>
+ 嗨，大兵！前面是雷区，想活命，把握机会吧……
+ <br/>
+ <br/>
+<input type="button" name="shengcheng" id="bm" value="保命细节" onclick="baoming();"/>
+
+<br/>
+<br/>
+<br/>
+ 行：<input type="text" name="hang" id="ha" value=""/>（行数>=3）
+ <br/>
+  <br/>
+    <br/>
+ 列：<input type="text" name="lie" id="li" value="">（列数>=3）
+ <br/>
+  <br/>
+ <input style="" type="button" name="shengcheng" id="sc" value="生成雷区" onclick="shengcheng();"/>
+  <input style="display:none;" type="button" name="cz" id="cz" value="重置" onclick="reset();"/><br/>
+ <hr/>
+ <div id="divv"></div>
+  </div>
+ </BODY>
+ <script type="text/javascript">
+
+	function baoming(){
+			 alert("保命细节：1：可以将可疑区域右击标注，显示为“拆”，再次右击，解除“拆”。2:已经安全的区域会显示周围八个方位雷的数量，如果周围无雷无显示，如果有雷显示雷的数量，如果有3个及多个雷，显示为3个。");
+			 }
+		 //获取雷区<table>对象
+		 var biao=document.getElementById("biao");
+		 //创建随机数，用于在不同位置生成雷
+		 var ra=Math.ceil(Math.random()*5);
+		//雷池
+		var ray = new Array();
+		//定义变量，记录出现th背景色是绿色的个数
+		var countColor=0;
+		 //定义雷的计数器
+		 var count=0;
+		 //控制随机数的随机数
+		var rp=Math.ceil(Math.random()*2);
+//清空雷区
+ function reset(){
+	//获取div标签对象，用于添加雷区
+	var di=document.getElementById("divv");
+	//清空雷区
+	di.innerHTML="";
+		  //获取输入列位置的值
+	 document.getElementById("li").value="";
+	 //获取输入行位置的值
+	 document.getElementById("ha").value="";
+	document.getElementById("sc").style="";
+		document.getElementById("cz").style="display:none;";
+ }
+//布雷的方法，用于重启布雷规则并给雷区id赋值
+ function lei(){
+	  //获取输入列位置的值
+	 var llie=document.getElementById("li").value;
+	 //获取输入行位置的值
+	 var ha=document.getElementById("ha").value;
+	 if(ha==""||ha==0||llie==""||llie==0){
+		alert("请输入行或列!");
+		return;
+	 }
+	 //雷最大值
+	 var max = (+llie)*(+ha);
+	 //控制雷个数
+	rp=Math.ceil(Math.random()*max);
+	while(rp>max*(2/5)||rp<3){
+	rp=Math.ceil(Math.random()*max);
+	}
+	 //重启布雷（控制雷位置）
+	for(var i=0;0<1;i++){
+		var count=0;
+		var rayid = Math.ceil(Math.random()*max);
+		if(rayid!=0){
+			rayid=rayid-1;
+		}
+		for(var y=0;y<ray.length;y++){
+			if(ray[y]==rayid){
+				count++;
+				i--;
+				break;
+			}
+		}
+		if(count==0){
+			ray[i]=rayid+"";
+		}
+		if(ray.length==rp){
+			break;
+		}
+		
+	}
+	 //获取所有input标签对象
+	 var ns=document.getElementsByName("n");
+	//遍历得到每一个input标签
+	for(var i=0;i<ns.length;i++){
+		//清空所有背景颜色
+		ns[i].style.background="white";
+		//清空input标签上的雷或标记
+		ns[i].value="";
+		//给每一位置上的input的id属性赋值
+		ns[i].id=i+"";
+
+	}
+}
+ //生成雷区的方法
+ function shengcheng(){
+	 		//获取div标签对象，用于添加雷区
+		var di=document.getElementById("divv");
+		//清空雷区
+		di.innerHTML="";
+ 		 //获取输入行位置的值
+		 var hang=document.getElementById("ha").value;
+		 //获取输入列位置的值
+		 var lie=document.getElementById("li").value;
+		 //用于控制表格宽高
+		 var li=+lie*5;
+		 //创建雷区（表格）
+		 if(hang>=3&&lie>=3){
+		 var tr="<table border='1' cellspacing='0' cellpadding='0' id='biao'width='"+li+"0px' height='"+li+"0px'>";
+	for(var i=1;i<=hang;i++){
+			tr+="<tr id='"+i+"'>";
+	for(var j=1;j<=lie;j++){
+			tr+="<th style='background:white' id='"+j+"'><input style='width:50px;height:50px' type='button' name='n' value='' onclick='dianlei();' oncontextmenu='youji();return false'/></th>";
+			}
+			tr+="</tr>";
+		}
+			tr+="</table>";
+
+		//添加雷区到页面
+		di.innerHTML=tr;
+		lei();
+			document.getElementById("sc").style="display:none;";
+		document.getElementById("cz").style="";
+		}else{
+			alert("行和列必须都大于3！");
+		}
+
+ }
+
+
+ //显示数字的方法
+ function xianshi(){
+	 //获取输入行位置的值
+	 var hang=document.getElementById("ha").value;
+	 //获取输入列位置的值
+	 var lie=document.getElementById("li").value;
+
+	//获取当前点击按钮的对象
+	var eve=event.srcElement;
+	//获取对象所在的列
+	var cow=eve.parentNode.id;	
+	//获取对象所在的行
+	var row=eve.parentNode.parentNode.id;
+	//获取所有行对象
+	var hangs=document.getElementsByTagName("tr");	
+	
+	var hangu="";
+	var hangul="";
+	var hangur="";
+	var hangd="";
+	var hangdl="";
+	var hangdr="";
+	var hangl="";
+	var hangr="";
+	//当 当前对象所在行不是第一行时才获取上面的对象
+	if(row!=1){
+	//获取点击对象上面的input对象，用于判断其是否是雷
+	hangu=hangs[row-2].getElementsByTagName("th")[cow-1].firstChild.id;
+
+	for(var i=0;i<ray.length;i++){
+		if(hangu==ray[i]){
+			count++;
+			break;
+		}
+	}
+	}
+
+	//当 当前对象所在列不是第一列时才获取左上面的对象
+	if(cow!=1&&row!=1){
+	//获取点击对象左上面的input对象，用于判断其是否是雷
+	hangul=hangs[row-2].getElementsByTagName("th")[cow-2].firstChild.id;
+	for(var i=0;i<ray.length;i++){
+		if(hangul==ray[i]){
+			count++;
+			break;
+		}
+	}
+	}
+	//当 当前对象所在列不是最后一列时才获取右上面的对象
+	if(cow!=lie&&row!=1){
+	//获取点击对象右上面的input对象，用于判断其是否是雷
+	hangur=hangs[row-2].getElementsByTagName("th")[cow].firstChild.id;
+	for(var i=0;i<ray.length;i++){
+		if(hangur==ray[i]){
+			count++;
+			break;
+		}
+	}
+	}
+
+
+	//当 当前对象所在行不是最后一行时才获取下面的对象
+	if(row!=hang){
+	//获取点击对象下面的input对象，用于判断其是否是雷
+	hangd=hangs[row].getElementsByTagName("th")[cow-1].firstChild.id;
+
+	for(var i=0;i<ray.length;i++){
+		if(hangd==ray[i]){
+			count++;
+			break;
+		}
+	}
+	}
+	//当 当前对象所在列不是第一列时才获取左下面的对象
+	if(cow!=1&&row!=hang){
+	//获取点击对象左下面的input对象，用于判断其是否是雷
+	hangdl=hangs[row].getElementsByTagName("th")[cow-2].firstChild.id;
+	for(var i=0;i<ray.length;i++){
+		if(hangdl==ray[i]){
+			count++;
+			break;
+		}
+	}
+	}
+	//当 当前对象所在列不是最后一列时才获取右下面的对象
+	if(cow!=lie&&row!=hang){
+	//获取点击对象右下面的input对象，用于判断其是否是雷
+	hangdr=hangs[row].getElementsByTagName("th")[cow].firstChild.id;
+	for(var i=0;i<ray.length;i++){
+		if(hangdr==ray[i]){
+			count++;
+			break;
+		}
+	}
+	}
+
+	//当 当前对象所在列不是第一列时才获取左面的对象
+	if(cow!=1){
+	//获取点击对象左面的input对象，用于判断其是否是雷
+	hangl=hangs[row-1].getElementsByTagName("th")[cow-2].firstChild.id;
+	for(var i=0;i<ray.length;i++){
+		if(hangl==ray[i]){
+			count++;
+			break;
+		}
+	}
+	}
+	//当 当前对象所在列不是最后一列时才获取右面的对象
+	if(cow!=lie){
+	//获取点击对象右面的input对象，用于判断其是否是雷
+	hangr=hangs[row-1].getElementsByTagName("th")[cow].firstChild.id;
+	for(var i=0;i<ray.length;i++){
+		if(hangr==ray[i]){
+			count++;
+			break;
+		}
+	}
+	}
+	//给按钮赋值，用于提示周围的雷数
+	if(count!=0){
+		if(count<=3){
+			eve.setAttribute("value",""+count);
+		}else{
+			eve.setAttribute("value","3");
+		}
+		
+	}
+
+	//赋值结束后给计数器清零
+	count=0;
+
+ }
+
+
+//点击雷区的方法，由每个input按钮触发
+function dianlei(){
+	 //获取输入行位置的值
+	 var hang=document.getElementById("ha").value;
+	 //获取输入列位置的值
+	 var lie=document.getElementById("li").value;
+		//获取所有input标签对象
+		var ns=document.getElementsByName("n");
+		//获取发生事件对象
+		var eve=event.srcElement;
+		//获取发生事件的对象的id
+		var ev=eve.id;
+
+		//判断当前点击的按钮的背景色是否为绿色，如果不为绿色，赋值为绿色，颜色++
+		if(eve.style.background!="green"){
+			
+			//改变点击了的按钮的背景颜色为绿色
+			eve.style.background="green";
+			//记录绿色背景的th对象的个数
+			countColor++;
+		}
+
+		//当点击按钮背景为绿色时，按钮值为空，不能再显示有“警”标记
+		eve.setAttribute("value","");
+
+		var count = 0;
+	//用产雷的条件在这里判断，是判断当前的按钮的id是否是符合产雷的按钮中的一个
+	//因为给产雷时给按钮赋值也是以id为依据的
+	//是，就给按钮赋雷，这样才能保证点击按钮时才显示是否是雷
+		for(var x=0;x<ray.length;x++){
+			if(ray[x]==ev){
+				count++;
+				break;
+			}
+		}
+		if(count!=0){
+			//调用产雷的方法，因为在这产雷才能保证点击按钮时才显示是否是雷，而不是在点击按钮前显示出雷的位置
+				chanlei();
+				alert("你已享有上将军衔，获一等功，因为……你阵亡了！");
+				//清空雷池
+				ray.length=0;
+				//重新布雷
+				lei();
+				//清空颜色计数器
+				countColor=0;
+			}else{
+				//显示点击按钮周围雷数的提示
+				xianshi();
+			}
+
+
+	if(countColor==(+hang)*(+lie)-ray.length){
+				alert("老兵！你已走出雷区……");
+				//清空雷池
+				ray.length=0;
+				//重新布雷
+				lei();
+				//清空颜色计数器
+				countColor=0;
+		}
+
+}
+//右击雷区，由每个按钮触发
+function youji(){
+		//获取发生事件对象
+		var eve=event.srcElement;
+		//判断如果当前按钮值已为“警”再右击时去除，如果按钮背景色已经为绿色，再右击时，不能再标注“警”
+		if(eve.value!="拆"&&eve.style.background!="green"){
+		//赋上警示标记
+		eve.setAttribute("value","拆");
+		}else if(eve.value=="拆"){
+		eve.setAttribute("value","");
+		}
+
+}
+//产雷的方法，被点击雷区的方法调用
+function chanlei(){
+//获取所有input标签对象
+	var ns=document.getElementsByName("n");
+
+	for(var i=0;i<ns.length;i++){
+	//判断id是否符合产雷条件
+		for(var x=0;x<ray.length;x++){
+			if(i==ray[x]){
+				//在符合条件的位置放雷
+			ns[i].setAttribute("value","雷");
+			//改变放雷位置的背景色
+			ns[i].style.background="red";
+			}
+		
+		}
+
+	}
+}
+
+ </script>
+</HTML>
